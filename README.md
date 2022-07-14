@@ -9,9 +9,6 @@
 # Snippy
 Rapid haploid variant calling and core genome alignment
 
-## Author
-[Torsten Seemann](https://twitter.com/torstenseemann)
-
 ## Synopsis
 
 Snippy finds SNPs between a haploid reference genome and your NGS sequence
@@ -106,7 +103,7 @@ The key parameters under user control are:
 
 ## Looking at variants in detail with `snippy-vcf_report`
 
-If you prompt the workflow to generate a report,you will get a snippy-vcf_report.txt that looks like below:
+If you prompt the workflow to generate a report,you will get a snps.report.txt that looks like below:
 ```
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 >LBB_contig000001:10332 snp A=>T DP=7 Q=66.3052 [7]
