@@ -4,6 +4,7 @@ Rapid haploid variant calling and core genome alignment
 
 import subprocess
 from pathlib import Path
+from weakref import ref
 from latch import small_task, workflow, large_gpu_task
 from latch.types import LatchFile, LatchDir, LatchParameter, LatchAuthor, LatchMetadata
 import os
@@ -24,17 +25,21 @@ metadata = LatchMetadata(
     license="MIT"
 )
 metadata.parameters = {
+    "end_read_type": LatchParameter(
+        display_name="Read type",
+        description="The type of read file you want to process. Could be single end or paired end or just contigs file"
+    ),
     "ref_gen": LatchParameter(
         display_name="Reference genome",
         description="Reference genome. E.g Listeria.gbk",
     ),
     "seq_read1": LatchParameter(
         display_name="Read 1",
-        description="First read sequence. Tip * Input reference genome in FASTA or GENBANK format",
+        description="First read sequence.",
     ),
     "seq_read2": LatchParameter(
         display_name="Read 2",
-        description="The second read sequence. Tip * Input reference genome in FASTA or GENBANK format",
+        description="The second read sequence.",
     ),
     "out_dir": LatchParameter(
         display_name="Outout directory",
@@ -51,6 +56,10 @@ metadata.parameters = {
     "contigs_file": LatchParameter(
         display_name="Contigs file",
         description="The contigs file"
+    ),
+    "cores": LatchParameter(
+        display_name="CPUS",
+        description="CPUS to run the samples. User higher CPUS for many samples"
     )
 
 }
@@ -68,12 +77,13 @@ def malformedrun():
 
 @large_gpu_task
 def snippy_task(ref_gen: LatchFile,
-                seq_read1: LatchFile,
-                seq_read2: LatchFile,
+                seq_read1: Optional[LatchFile],
+                seq_read2: Optional[LatchFile],
+                end_read_type: ReadType,
                 contigs_file: Optional[LatchFile],
                 out_dir: LatchDir,
                 gen_report: bool = False,
-                cores: int = 16) -> LatchDir:
+                cores: str = "16") -> LatchDir:
 
     # Defining outputs
 
@@ -81,26 +91,33 @@ def snippy_task(ref_gen: LatchFile,
     local_prefix = os.path.join(local_dir, "Latch_snippy_files")
 
     # Lets define command options
-    if gen_report == True:
-        reads = ["--report",
-                 "--outdir",
-                 str(local_prefix),
-                 "--ref",
-                 ref_gen.local_path,
-                 "--R1",
-                 seq_read1.local_path,
-                 "--R2",
-                 seq_read2.local_path, ]
-    else:
+    # I dont know why the program does not consider these control flows
+    if end_read_type.value == ReadType.PairedEndRead:
+        if gen_report != False:
+            reads = ["--report", "--outdir", str(local_prefix), "--ref",
+                     ref_gen.local_path, "--R1", seq_read1.local_path, "--R2", seq_read2.local_path, ]
+        else:
+            reads = ["--outdir", str(local_prefix), "--ref", ref_gen.local_path,
+                     "--R1", seq_read1.local_path, "--R2", seq_read2.local_path, ]
+    elif end_read_type.value == ReadType.singleEndRead:
+        if gen_report != False:
 
-        reads = ["--outdir",
-                 str(local_prefix),
-                 "--ref",
-                 ref_gen.local_path,
-                 "--R1",
-                 seq_read1.local_path,
-                 "--R2",
-                 seq_read2.local_path, ]
+            reads = ["--report", "--outdir",
+                     str(local_prefix), "--ref", ref_gen.local_path, "--R1", seq_read1.local_path, ]
+        else:
+            reads = ["--outdir",
+                     str(local_prefix), "--ref", ref_gen.local_path, "--R1",  seq_read1.local_path, ]
+    elif end_read_type.value == ReadType.contigs:
+        if gen_report != False:
+            reads = ["--report", "--outdir", str(local_prefix),
+                     "--ref", ref_gen.local_path, "--contigs", contigs_file.local_path]
+        else:
+            reads = ["--outdir", str(local_prefix), "--ref",
+                     ref_gen.local_path, "--contigs", contigs_file.local_path]
+    # This assumes that the user does not want the report, all things remain constant. Removing this statememt causes the program to fail.
+    else:
+        reads = ["--outdir", str(local_prefix), "--ref", ref_gen.local_path,
+                 "--R1", seq_read1.local_path, "--R2", seq_read2.local_path, ]
 
     # Define the command
         _snippy_cmd = [
@@ -110,6 +127,7 @@ def snippy_task(ref_gen: LatchFile,
             *reads
 
         ]
+
         # Run subprocess
         subprocess.run(_snippy_cmd, check=True)
 
@@ -121,6 +139,7 @@ def snippy_task(ref_gen: LatchFile,
 def snippy(ref_gen: LatchFile,
            seq_read1: LatchFile,
            seq_read2: LatchFile,
+           end_read_type: ReadType,
            contigs_file: Optional[LatchFile],
            out_dir: LatchDir,
            gen_report: bool = False,
@@ -200,6 +219,8 @@ def snippy(ref_gen: LatchFile,
     del  | Deletion | ACGG => ACG
     complex | Combination of snp/mnp | ATTC => GTTA
 
+    > Note: At default, the program assumes that you do no wish to generate a report and that you are running a paired end file. 
+
 
 
     """
@@ -208,6 +229,17 @@ def snippy(ref_gen: LatchFile,
                        seq_read1=seq_read1,
                        seq_read2=seq_read2,
                        contigs_file=contigs_file,
+                       end_read_type=end_read_type,
                        out_dir=out_dir,
                        gen_report=gen_report,
                        cores=cores)
+
+
+# if __name__ == "__main__":
+    snippy(
+        ref_gen="/home/sgodette/Downloads/GCF_000013925.1_ASM1392v2_genomic(1).fna",
+        seq_read1="/home/sgodette/Downloads/P7741_R1.fastq",
+        seq_read2="/home/sgodette/Downloads/P7741_R2.fastq",
+        end_read_type="paired",
+        gen_report="false",
+    )
