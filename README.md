@@ -1,16 +1,13 @@
 # snippy
 ![image](https://user-images.githubusercontent.com/96872843/176043639-359d461a-2185-4f68-ae09-be005285ce16.png)
-[Launch the workflow at the Latch console](https://console.latch.bio/explore/61353/info)
+[Launch the workflow at the Latch console](https://console.latch.bio/explore/65693/info)
  [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/ge_odette.svg?style=social&label=Follow%20%40ge_odette)](https://twitter.com/ge_odette)
 [![Build Status](https://travis-ci.org/tseemann/snippy.svg?branch=master)](https://travis-ci.org/tseemann/snippy)
-[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![License: MIT](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 ![Don't judge me](https://img.shields.io/badge/Language-latch-steelblue.svg)
 
 # Snippy
 Rapid haploid variant calling and core genome alignment
-
-## Author
-[Torsten Seemann](https://twitter.com/torstenseemann)
 
 ## Synopsis
 
@@ -106,7 +103,7 @@ The key parameters under user control are:
 
 ## Looking at variants in detail with `snippy-vcf_report`
 
-If you prompt the workflow to generate a report,you will get a snippy-vcf_report.txt that looks like below:
+If you prompt the workflow to generate a report,you will get a snps.report.txt that looks like below:
 ```
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 >LBB_contig000001:10332 snp A=>T DP=7 Q=66.3052 [7]
@@ -140,4 +137,7 @@ The workflow has been configured to work with contig files. Check the contigs op
 Sometimes one of your samples is only available as contigs, without
 corresponding FASTQ reads. It does this by shredding the contigs
 into 250 bp single-end reads at `2 &times; --mincov` uniform coverage.
+
+## Example output
+![snp](https://user-images.githubusercontent.com/96872843/181271654-d71fb361-ac14-4fc6-8f66-b760d161369b.png)
 
