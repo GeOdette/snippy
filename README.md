@@ -138,3 +138,6 @@ Sometimes one of your samples is only available as contigs, without
 corresponding FASTQ reads. It does this by shredding the contigs
 into 250 bp single-end reads at `2 &times; --mincov` uniform coverage.
 
+## Example output
+![snp](https://user-images.githubusercontent.com/96872843/181271654-d71fb361-ac14-4fc6-8f66-b760d161369b.png)
+
