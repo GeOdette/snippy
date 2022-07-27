@@ -94,7 +94,6 @@ def snippy_task(ref_gen: LatchFile,
     local_prefix = os.path.join(local_dir, "Latch_snippy_files")
 
     # Lets define command options
-    # I dont know why the program does not consider these control flows
     if read_type.value == "Paired end reads":
         if gen_report == True:
             reads = ["--report", "--outdir", str(local_prefix), "--ref",
