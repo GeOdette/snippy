@@ -3,7 +3,7 @@
 [Launch the workflow at the Latch console](https://console.latch.bio/explore/61353/info)
  [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/ge_odette.svg?style=social&label=Follow%20%40ge_odette)](https://twitter.com/ge_odette)
 [![Build Status](https://travis-ci.org/tseemann/snippy.svg?branch=master)](https://travis-ci.org/tseemann/snippy)
-[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![License: MIT](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 ![Don't judge me](https://img.shields.io/badge/Language-latch-steelblue.svg)
 
 # Snippy
